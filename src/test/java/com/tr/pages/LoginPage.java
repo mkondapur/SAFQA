@@ -11,6 +11,9 @@ import com.tr.util.BasePageObject;
 
 public class LoginPage extends BasePageObject{
 
+	/**
+	 * @author Santosh/Narendranath
+	 */
 	WebDriver driver;
 	WebElement element;
 	 public LoginPage(WebDriver driver) {
@@ -60,14 +63,14 @@ public class LoginPage extends BasePageObject{
 		return new LoginPage(driver);
 	}
 	
-	public DashboardPage clickOnLogin() throws InterruptedException{
+	public MyDashbordPage clickOnLogin() throws InterruptedException{
 		element = driver.findElement(btnSignIn);
 		flag = element.isDisplayed();
 		Assert.assertTrue(flag, "Login button is not displayed");
 		element.click();
 		//MonsterUtil.implicitWait(30);
 		Thread.sleep(2000);
-		return new DashboardPage(driver);
+		return new MyDashbordPage(driver);
 	}
 	
 	

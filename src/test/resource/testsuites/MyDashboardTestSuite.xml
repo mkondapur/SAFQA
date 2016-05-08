@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Monster My Dashboard Test Suite">
+<parameter name="url" value="http://www.monsterindia.com/"/>
+<parameter name="browserType" value="FF"/>
+  <test name="My Dashboard Test">
+    <classes>
+      <class name="com.tr.test.MyDashBoardPageTest"/>
+    </classes>
+  </test>
+</suite>

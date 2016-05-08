@@ -4,13 +4,13 @@ import org.openqa.selenium.WebDriver;
 
 import com.tr.util.BasePageObject;
 
-public class LogOutPage extends BasePageObject {
-
+public class ViewResumePage extends BasePageObject{
 	/**
-	 * @author Santosh
+	 * @author Mahesh
 	 */
 	WebDriver driver;
-	public LogOutPage(WebDriver driver) {
+	
+	public ViewResumePage(WebDriver driver) {
 		
 		super(driver);
 	}

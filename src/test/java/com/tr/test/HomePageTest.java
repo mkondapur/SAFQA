@@ -6,7 +6,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.tr.common.MonsterIndiaConstants;
-import com.tr.pages.DashboardPage;
+import com.tr.pages.MyDashbordPage;
 import com.tr.pages.HomePage;
 import com.tr.pages.LogOutPage;
 import com.tr.pages.LoginPage;
@@ -16,10 +16,13 @@ import com.tr.util.ExcelutilObject;
 
 public class HomePageTest extends BaseTestObject{
 
+	/**
+	 * @author Manjunath H S
+	 */
 	private static Logger Log = Logger.getLogger(Logger.class.getName());
 	HomePage objHomePage = null;
 	LoginPage objLoginPage = null;
-	DashboardPage objDashboardPage = null;
+	MyDashbordPage objDashboardPage = null;
 	LogOutPage objLogOutPage = null;
 	SearchResultPage objSearchResultPage = null;
 	

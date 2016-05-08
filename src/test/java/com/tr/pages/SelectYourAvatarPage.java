@@ -4,14 +4,14 @@ import org.openqa.selenium.WebDriver;
 
 import com.tr.util.BasePageObject;
 
-public class LogOutPage extends BasePageObject {
-
+public class SelectYourAvatarPage extends BasePageObject{
+	
 	/**
-	 * @author Santosh
+	 * @author Gowtham
 	 */
-	WebDriver driver;
-	public LogOutPage(WebDriver driver) {
+	public SelectYourAvatarPage(WebDriver driver) {
 		
 		super(driver);
 	}
+
 }

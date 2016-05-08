@@ -4,14 +4,17 @@ import org.openqa.selenium.WebDriver;
 
 import com.tr.util.BasePageObject;
 
-public class LogOutPage extends BasePageObject {
+public class ProfileCompletenessPage extends BasePageObject {
 
 	/**
-	 * @author Santosh
+	 * @author Satish
 	 */
 	WebDriver driver;
-	public LogOutPage(WebDriver driver) {
+	
+	public ProfileCompletenessPage(WebDriver driver) {
 		
 		super(driver);
+		
 	}
+	
 }

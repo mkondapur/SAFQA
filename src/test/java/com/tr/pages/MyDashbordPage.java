@@ -11,7 +11,11 @@ import org.testng.Assert;
 
 import com.tr.common.MonsterUtil;
 
-public class DashboardPage {
+public class MyDashbordPage {
+	
+	/**
+	 * @author Satish 
+	 */
 	
 //************** Declaration Area begins**************************
 	WebDriver driver;
@@ -48,7 +52,7 @@ public class DashboardPage {
 	 * @param driver
 	 */
 	
-	public DashboardPage (WebDriver driver){
+	public MyDashbordPage (WebDriver driver){
 		this.driver = driver;
 	}
 /**
@@ -245,7 +249,7 @@ public class DashboardPage {
 		
 	}
 	
-	public DashboardPage clickOnProfilePopUp(){
+	public MyDashbordPage clickOnProfilePopUp(){
 		
 		try {
 			element = driver.findElement(popProfileCompletness);
@@ -261,7 +265,7 @@ public class DashboardPage {
 	
 		}
 		
-		return new DashboardPage(driver);
+		return new MyDashbordPage(driver);
 	}
 	
 	public LogOutPage clickOnLogOut() throws Exception{
