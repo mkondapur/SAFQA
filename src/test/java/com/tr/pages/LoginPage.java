@@ -14,7 +14,6 @@ public class LoginPage extends BasePageObject{
 	/**
 	 * @author Santosh/Narendranath
 	 */
-	WebDriver driver;
 	WebElement element;
 	 public LoginPage(WebDriver driver) {
 		super(driver);
@@ -50,6 +49,7 @@ public class LoginPage extends BasePageObject{
 	}
 	
 	public LoginPage enterUserName(String txtUserName){
+		Log.info("Enter user name as:"+txtUserName);
 		flag = setUserName().isDisplayed();
 		Assert.assertTrue(flag, "User name field is not displayed");
 		setUserName().sendKeys(txtUserName);
@@ -57,21 +57,27 @@ public class LoginPage extends BasePageObject{
 	}
 	
 	public LoginPage enterPassword(String txtPassword){
+		Log.info("Enter password as:"+txtPassword);
 		flag = setPassword().isDisplayed();
 		Assert.assertTrue(flag, "Password txt field is not displayed");
 		setPassword().sendKeys(txtPassword);
 		return new LoginPage(driver);
 	}
 	
-	public MyDashbordPage clickOnLogin() throws InterruptedException{
+	public MyDashbordPage clickOnLogin() {
+		Log.info("Clickin on Login button");
 		element = driver.findElement(btnSignIn);
 		flag = element.isDisplayed();
 		Assert.assertTrue(flag, "Login button is not displayed");
 		element.click();
-		//MonsterUtil.implicitWait(30);
-		Thread.sleep(2000);
+		MonsterUtil.implicitWait(30);
 		return new MyDashbordPage(driver);
 	}
 	
-	
+	public void loginAsJobSeeker(String userName,String password) {
+		Log.info("Login as jobseeker with credentails");
+		enterPassword(userName);
+		enterPassword(password);
+		clickOnLogin();
+	}
 }

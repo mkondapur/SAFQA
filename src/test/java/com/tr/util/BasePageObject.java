@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -30,6 +31,7 @@ public class BasePageObject {
 	//protected static WebDriver uiDriver;
 	public WebDriver driver;
 	public WebElement element;
+	public static Logger Log = Logger.getLogger(Logger.class.getName());
 	
 	public BasePageObject(WebDriver driver){
 	this.driver = driver;	

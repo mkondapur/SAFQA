@@ -5,6 +5,6 @@ import com.tr.util.BaseTestObject;
 public class SearchPageTest extends BaseTestObject{
 
 	/**
-	 * @author Gowtham
+	 * @author Manjunath H S
 	 */
 }

@@ -1,12 +1,17 @@
 package com.tr.pages;
 
+import java.awt.RenderingHints.Key;
 import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.xmlbeans.impl.tool.Extension.Param;
+import org.dom4j.Branch;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.internal.Extension;
@@ -17,10 +22,13 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import com.google.common.base.Splitter.MapSplitter;
 import com.google.common.base.Throwables;
+import com.sun.jna.platform.win32.LMAccess.LOCALGROUP_USERS_INFO_0;
 import com.sun.jna.platform.win32.OaIdl.PARAMDESC;
 import com.sun.jna.platform.win32.Secur32.EXTENDED_NAME_FORMAT;
 import com.sun.jna.platform.win32.WinUser.MOUSEINPUT;
+import com.thoughtworks.selenium.webdriven.commands.IsElementPresent;
 import com.tr.common.MonsterUtil;
 import com.tr.util.BasePageObject;
 
@@ -31,27 +39,29 @@ public class HomePage extends BasePageObject
  */
 
 {
-	WebDriver driver;
-	//WebElement element=null;
-	
+		
 	//Constructor
 		public HomePage(WebDriver driver) 
 		{
-		super(driver);
+			super(driver);
 		}
 		
 	/*Variables*/
 		
 	boolean flag = false;
 	List<WebElement> list=null;
+	List<String> lnk = null;
 	WebElement actualList,homePageTab=null;
 	int count = 0;
 	int expectedCount=4;
 	String ankerLinkText=null;
 	Actions act;
 	String outPutValue=null;
-	String expectedTopJobstext="Top Jobs";
-	String txt = null;
+	
+	String expectedCompanyJobtext = "company JOBS";
+	String expectedMoreJobstext = "More Jobs»";
+	String expectedEmploerstext = "Employers of Choice";
+	String txt, link = null;
 	
 	/*Web elements*/
 	
@@ -60,13 +70,21 @@ public class HomePage extends BasePageObject
 	By lnkMyMonster = By.id("mn-lnk-2");
 	By txtJobTitle = By.id("fts_id");
 	By scltExperience=By.id("selExp");
+	//By experienceOptions = By.xpath("//div[@id='exp_container_Header']//ul/li[3]/a[1]");
+	By experienceOptions = By.xpath("//div[@class='single_select']/ul/li[");
+	By experienceOptionsNext  = By.xpath("]/a");
+	
 	By txtLocation=By.id("lmy");
 	By btnFindBetter = By.xpath("//input[@value='Find Better']");
 	By lblTopJobs = By.xpath("//span[@class='txt lft']");
-			//By.linkText("Top Jobs");
-			//By.xpath("//section[@id='bodysection']//div[contains(@class,'tp_jobhead')]//span[contains(@class,'txt')]");
-	
+	By txtTopJobsSection = By.xpath("//div[span[contains(.,'Top Jobs')]]/following::a[1]//div[@class='tpjob_title']");
+	By lblCompanyJobs = By.xpath("//Section[@id='bodysection']//h1");
+	By txtTopRecruiters= By.xpath("//div[@class[contains(.,'tpjobsmain')]]/following::a[1]//div[@class='tpjobwrap clr']");
+	By lnkMoreJobs = By.xpath("//div[@id='consult_container']//a[@class='lnk']");
+	By lblEmployersChoice = By.xpath("//Section[@id='bodysection']//div[@Class='emplogoh']");
 	By lnkSignIn = By.xpath("//div[contains(text(),'Sign in')]");
+	By lblTopRecruiters=By.xpath("//div[span[contains(.,'Top recruiters')]]");
+	By numTollFreeNumber = By.xpath("//span[@id='free_num_ui']/span[1]");
 	/**
 	 * This method helps us to find the site Logo
 	 * @return boolean
@@ -77,15 +95,10 @@ public class HomePage extends BasePageObject
 	{
 		try 
 		{
+			Log.info("-->Verifying the Site-Logo in Home page<--");
 			flag = isElementPresent(imgSiteLogo);
-			if (flag) 
-			{
-			System.out.println("Site logo is displayed in Home Page");	
-			}			
-			else
-			{
-				System.out.println("Site logo is not displayed in Home Page");
-			}
+			Assert.assertTrue(flag, "Site Log not displayed in Home page");
+			Log.info("-->Verified Site Logo in Home Page<--");
 		} 
 		catch (Exception e) 
 		{
@@ -93,105 +106,71 @@ public class HomePage extends BasePageObject
 		}
 		return flag;
 	}
-	/** To verify header links in the home page
+	
+	/** To verify Count of links links in the home page
 	 * @return int
 	 * @param No param
 	 * @throws Exception 
 	 */
-	public int verifyHeaderCount() throws Exception
+	public void verifyHeaderCount() throws Exception
 	{
 		try 
 		{
-			System.out.println("Verifying header links");
+			Log.info("-->Verifying header links Count<--");
+			//List<WebElement>elements = driver.findElements(By.xpath("//div[contains(@class,'mn-mainnav')]//a"));
 			list=driver.findElements(lnkHeaderLinks);
 			count = list.size();
 			System.out.println("Header links count::"+count);
 			if (count==expectedCount)
 			{
-			System.out.println("Expected link::"+expectedCount+"::Actual link"+count+" are matching");	
+			System.out.println("Expected header link Count::"+expectedCount+"::Actual Header link count ::"+count+" are matching");	
 			}
 			else
 			{
-				System.out.println("Expected link::"+expectedCount+"::Actual link"+count+" are not matching");
+				System.out.println("Expected header link count::"+expectedCount+"::Actual header link count::"+count+" are not matching");
 			}
+			Log.info("-->Verifyed header links Count<--");
 							
 		} 
 		catch (Exception e) 
 		{
-		throw new Exception("Expected and Actual Link counts are not same::"+verifyHeaderLinks());	
+		throw new Exception("Expected and Actual header Link counts are not same::"+e.getLocalizedMessage());	
 		}
 		
-		return count;
+		//return count;
 	}
+	
 	/**
-	 * Display the Page header Anker Link Text details
+	 * Verify different Header Link Names.
 	 * @return String
 	 * @param No Parm
 	 * @throws Exception
 	 */
-	public String verifyHeaderLink() throws Exception
+	public List<String> getHeaderLinkNames() throws Exception
 	{
 		try 
 		{
+			Log.info("-->Get Header Link Names from Home Page<--");
+			lnk = new ArrayList<String>();
 			list = driver.findElements(lnkHeaderLinks);
-			count = list.size();
-			for (int i = 0; i <= count; i++)
+			for (int i = 0; i <= list.size(); i++)
 			{
-				actualList=list.get(i);
-				outPutValue = actualList.getText();
-				System.out.println("Anker Link details are:"+outPutValue);
+				outPutValue = list.get(i).getText();
+				lnk.add(outPutValue);
+				System.out.println("Header link Names are displayed as:"+outPutValue);
+				Log.info("-->Getted Link Names in Home Page <--");
 			}
 			
 		} 
 		catch (Exception e) 
 		{
-			//Getting Exception here, Need to Check with Manju
-			throw new Exception("Not showing the Anker Header Text:"+ankerLinkText);
+			throw new Exception("Not displayed Header link Names in home page:"+e.getLocalizedMessage());
 		}
-		return ankerLinkText;
-	}
-	/**Count the total links in 'My Manster' page
-	 * @param No Param
-	 * @return List<String>
-	 * @throws Showing Error, need to check
-	 */
-	
-	public List<String> verifyHeaderLinks(){
-		List<String>lnk = new ArrayList<String>();
-		list = driver.findElements(lnkHeaderLinks);
-		for (int i = 0;i<list.size();i++) {
-			  String link = list.get(i).getText();
-			  lnk.add(link);
-			  System.out.println("Added header name as:"+link);
-		}
-		System.out.println("Added all the links");
 		return lnk;
 	}
 	
-	public int myMonsterLinks()
-	{
-		try 
-		{
-			actualList=null;
-			count=0;
-			actualList = driver.findElement(lnkMyMonster);
-			act = new Actions(driver);
-			//act.moveToElement(actualList);
-			//Thread.sleep(3000);
-			act.click().build().perform();
-			list=null;
-			list = driver.findElements(By.xpath("//div[@id='mn-navdd-2']/div[contains(@class,'ddnavinnr ')]"));
-			count = list.size();
-			System.out.println(count);
-			
-		} 
-		catch (Exception e) 
-		{
-			
-		}
-		return myMonsterLinks();
-	}
-	/**To check Job Title Text box is displayed and Enabled
+		
+	/**Job Title Text box is displayed and Enabled
 	 * @return boolean;
 	 * @param No Param
 	 * @throws Exception
@@ -200,25 +179,29 @@ public class HomePage extends BasePageObject
 	{
 		try
 		{
-		//flag = driver.findElement(txtJobTitle).isDisplayed() && driver.findElement(txtJobTitle).isEnabled();
-		  flag = setElement(txtJobTitle).isDisplayed()&&setElement(txtJobTitle).isEnabled();
+		Log.info("-->Verifying the Job title text box is Dispalyed and Enabled>--");
+		flag = isElementPresent(txtJobTitle);
+		Assert.assertTrue(flag, "Job Title Text box is not displayed");
 		if (flag)
 		{
-		System.out.println("Job Title TextBox is Displayed and it is Enabled");	
+			flag = setElement(txtJobTitle).isEnabled();
+			System.out.println("Job Title TextBox is Displayed and Enabled");
+			Assert.assertTrue(flag, "Job Title TextBox is Displayed, but not Enabled");
 		}
 		else
 		{
-			System.out.println("Job Title Text Box is either Not displayed OR Not Enabled");
+			System.out.println("Job Title TextBox is not Displayed");
 		}
+		Log.info("-->Verified the Job title text box status <--");
 		}
 		catch(Exception e)
 		{
-			throw new Exception("Job title text box is not displayed/enabled:"+isJobTitleTextBoxDisplayed()+e.getLocalizedMessage());
+			throw new Exception("Not able to find the Job Title Text Box:"+isJobTitleTextBoxDisplayed()+e.getLocalizedMessage());
 		}
 		return flag;
 	}
 	/**
-	 * To Verify Location text box status
+	 * Job Location Text box is displayed and Enabled
 	 * @return boolean
 	 * @param No param
 	 * @throws Exception
@@ -227,19 +210,47 @@ public class HomePage extends BasePageObject
 	{
 		try 
 		{
-		flag=driver.findElement(txtLocation).isDisplayed() && driver.findElement(txtLocation).isEnabled();
+		Log.info("-->Verifying the Location text box is Dispalyed and Enabled>--");
+		flag = isElementPresent(txtLocation);
+		Assert.assertTrue(flag, "Location text box is not displayed");
 		if (flag)
 		{
-		System.out.println("Location Drop Down text box is Displayed and Enabled");	
+			flag = setElement(txtLocation).isEnabled();
+			Assert.assertTrue(flag, "Location text box is displayed, but not enabled");
+				
 		}
-		else
-		{
-			System.out.println("Location Drop Down text box is Not Displayed OR Enabled");
-		}
+		Log.info("-->Verified the Location text box status <--");
 		}
 		catch (Exception e) 
 		{
-			throw new Exception("Location text box is Not Enabled/Displayed:"+isLocationTextBoxDisplayed()+e.getLocalizedMessage());
+			throw new Exception("Not able to find the Location text box:"+isLocationTextBoxDisplayed()+e.getLocalizedMessage());
+		}
+		return flag;
+	}
+	/**
+	 * Job Experience Text box is displayed and Enabled
+	 * @return boolean
+	 * @param No Parm
+	 * @throws Exception
+	 */
+	public boolean isExperienceTextBoxDisplayed() throws Exception
+	{
+		try
+		{
+			Log.info("-->Verifying the Experince text box is Dispalyed and Enabled>--");
+			flag = isElementPresent(scltExperience);
+			Assert.assertTrue(flag, "Experince drop down text box is not displayed");
+			if (flag)
+			{
+			flag = setElement(scltExperience).isEnabled();
+			Assert.assertTrue(flag, "Experience drop down text box is displayed, but not enabled");
+			}
+			Log.info("-->Verified the Experience text box status <--");
+			
+		}
+		catch(Exception e)
+		{
+			throw new Exception("Not able to Found Experince drop down in home page:"+isExperienceTextBoxDisplayed()+e.getLocalizedMessage());
 		}
 		return flag;
 	}
@@ -250,111 +261,264 @@ public class HomePage extends BasePageObject
 	 * @param String jobTitle
 	 * @throws Exception
 	 */
-	public LoginPage enterJObTitle(String jobTitle) throws Exception{
-		try {
-			element = setElement(txtJobTitle);
-			flag = element.isDisplayed();
-			Assert.assertTrue(flag, "jobTitle is not displayed");
+	public HomePage enterJObTitle(String jobTitle) throws Exception{
+		try 
+		{
+			Log.info("-->Entering Job Title>--");	
+			isJobTitleTextBoxDisplayed();
 			clearAndEnterValueInTextBox(txtJobTitle, jobTitle);
-			} 
+			Log.info("-->Entered Job Title>--");
+		} 
+			
 		catch (Exception e) 
 		{
 			throw new Exception("Failed while entering jobTitle"+e.getLocalizedMessage());
 		}
 		
-		return new LoginPage(driver);
+		return new HomePage(driver);
+	}
+	
+	/**
+	 * To input Location
+	 * @param String jobLocation
+	 * @return HomePage
+	 * @throws Exception
+	 */
+	
+	public HomePage enterJobLocation(String jobLocation) throws Exception
+	{
+		try 
+		{
+			Log.info("-->Entering Job Location>--");
+			isJobTitleTextBoxDisplayed();
+			clearAndEnterValueInTextBox(txtLocation, jobLocation);
+			Log.info("-->Entered Job Location>--");
+		}
+		catch (Exception e)
+		{
+			throw new Exception("Failed while entering Location"+e.getLocalizedMessage());
+		}
+		
+		return new HomePage(driver);
 	}
 	/**
-	 * To check Find Better check Box is displayed.
+	 * To Select Location
+	 * @param String jobExperince
+	 * @return HomePage
+	 * @throws Exception
+	 */
+	public HomePage selectExperience(String jobExperince) throws Exception
+	{
+		try 
+		{
+			Log.info("-->Entering Years of Experince>--");
+			isExperienceTextBoxDisplayed();
+			if (element.isEnabled())
+			{
+			element.click();
+			MonsterUtil.explicitWait(2000);
+			WebElement element = driver.findElement(By.xpath("//div[@class='single_select']/ul/li[2]/a"));
+			element.click();
+			MonsterUtil.explicitWait(2000);
+//			lnk = new ArrayList<String>();
+//			list = driver.findElements(experienceOptions);
+//			for (int i = 1; i <= list.size(); i++)
+//			{
+//				outPutValue=list.get(i).getText();	
+//			if (outPutValue.equals("2"))
+//			{
+//				element.sendKeys(Keys.ARROW_DOWN);
+//				element.click();
+//				break;
+//			}
+			
+				/*outPutValue = list.get(i).getText();
+				lnk.add(outPutValue);
+				System.out.println("Header link Names are displayed as:"+outPutValue);
+				Log.info("-->Getted Link Names in Home Page <--");*/
+			}
+			
+			//element = setElement(experienceOptions);
+			//element.click();
+			
+			Log.info("-->Entered Years of Experince>--");
+			//}
+		} 
+		catch (Exception e)
+		{
+			throw new Exception("Failed to select Experince details"+e.getLocalizedMessage());
+		}
+			return new HomePage(driver);
+	}
+	/**
+	 * Click on Find Better button.
 	 * @return boolean
 	 * @param No param
 	 * @throws Exception
 	 */
-	public SearchResultPage clickOnFindBetter(){
-		try {
+	public SearchResultPage clickOnFindBetter() throws Exception
+	{
+		try 
+		{
+			Log.info("-->Clicking on Find Better link>--");
 			element = setElement(btnFindBetter);
 			flag = element.isDisplayed();
 			Assert.assertTrue(flag, "Find button is not displayed");
-			element.click();
-			waitImplicit(3000);
-			} 
+			if (flag)
+			{
+				flag = element.isEnabled();
+				element.click();
+				MonsterUtil.explicitWait(2000);
+			}
+			Log.info("-->Clicked on Find Better link>--");
+		} 
 		catch (Exception e) 
 		{
-			
+		throw new Exception("Failed to click on Find Better link::"+e.getLocalizedMessage());	
 		}
 		
 		return new SearchResultPage(driver);
 	}
+	
 	/**
-	 * to validate the Top Job Section in Monster Home page
+	 * Verify only Top Job Section in Home page
+	 * @return Void
+	 * @throws Exception
+	 * @param No param
+	 */
+	public void verifyTopJobsSection()throws Exception
+	 
+	{
+		String expectedTopJobstext="Top Jobs";
+		try 
+		{
+		Log.info("-->Verifying the Top Job text in Home Page<--");
+		flag = isElementPresent(lblTopJobs);
+		Assert.assertTrue(flag, "Top Job section not found");
+		if (flag)
+		{
+			txt = setElement(lblTopJobs).getText();
+			Assert.assertEquals(txt, expectedTopJobstext, "Actual Top Job text:" + txt + "Expected Top Job text:"+expectedTopJobstext+"are Same");
+		}
+		Log.info("-->Verified the Top Job text in Home Page<--");
+		}
+		catch (Exception e)
+		{
+			throw new Exception("Expected and Actual Top Job text message are not matching:"+e.getLocalizedMessage());
+		}
+	}
+	
+	/**
+	 * Checking Top Job section
+	 * @return String
+	 * @param No Param
+	 * @throws Exception
+	 */
+	
+	public String getTextContentFromTopJobs() throws Exception
+	{
+		try 
+		{
+			Log.info("-->Validating text contents in Top Job section--");
+			verifyTopJobsSection();
+			outPutValue = getText(txtTopJobsSection);
+			if (outPutValue!=null)
+			{
+			System.out.println("Contents in Top Job Sections are::"+outPutValue);	
+			}
+			Log.info("-->Validated text contents in Top Job section--");
+		} 
+		catch (Exception e) 
+		{
+			throw new Exception("Not displaying any contents in Top Job section::"+getTextContentFromTopJobs()+e.getLocalizedMessage());
+		}
+		return outPutValue;
+	}
+	
+	/**
+	 * Checking Recruiters Section in Home page
 	 * @return String
 	 * @throws Exception
 	 * @param No param
 	 */
-	public boolean verifyTopJobs()throws Exception
-	 
+	public String verifyTopRec() throws Exception
 	{
+		String expectedTopRecText = "Top recruiters";
 		try 
 		{
-			
-		//txt = driver.findElement(lblTopJobs).getText();
-			txt = setElement(lblTopJobs).getText();
-		//Assert.assertEquals(expectedTopJobstext, homePageTab,"Tops Jobs Section not present");
-		if (txt.equals(expectedTopJobstext)) 
-		{
-		System.out.println("Top Jobs section is Present");	
-		}
-		else
-		{
-		System.out.println("Top Jobs section is not present");
-		}
+			Log.info("-->Validating Recruiterssd--");
+			flag = isElementPresent(lblTopRecruiters);
+			Assert.assertTrue(flag, "Top Recruiters section not found"); 
+			if (flag)
+			{
+				txt = setElement(lblTopRecruiters).getText();
+				Assert.assertEquals(txt,lblTopRecruiters, "Actual Recruiters text is:" + txt + "Expected Recruiters text:"+expectedTopRecText+"are Same");
+				outPutValue = getText(txtTopRecruiters);
+				if (outPutValue!=null)
+				{
+					System.out.println("Contents in recruiters section are::"+outPutValue);	
+				}
+				else
+				{
+					System.out.println("Contents in the recruiters section are Empty");
+				}
+			} 
+			Log.info("-->Validated Recruiters--");
 		}
 		catch (Exception e)
 		{
-			throw new Exception("TopJob Section Not Present:"+verifyTopJobs()+expectedTopJobstext+e.getLocalizedMessage());
+			throw new Exception("Expected and Actual Top Recruiters text message are not matching"+verifyTopRec()+e.getLocalizedMessage());
 		}
-		return flag;
-		
+		return outPutValue;
 	}
-	
 	/**
-	 * to Verify SignIn button present in the Home Page
+	 * Toll Free number in Home page
 	 * @return boolean
-	 * @throws Exception
-	 * @param No Param
+	 * 
 	 */
-	public boolean isSingInButtonPresent() throws Exception
+	public boolean isTollFreeNumberPrestnt() throws Exception
 	{
 		try 
 		{
-			element = driver.findElement(lnkSignIn);
-			flag = (element.isDisplayed() && element.isEnabled());
-			Assert.assertTrue(flag, "Sign button is not present");
-			
-		} catch (Exception e)
+			String expectedToolFreeNumber = "1-800-4196666";
+			flag = isElementPresent(numTollFreeNumber);
+			Assert.assertTrue(flag, "Toll Free number not present");
+			if (flag) 
+			{
+			txt = setElement(numTollFreeNumber).getText();
+			Assert.assertEquals(txt, expectedToolFreeNumber ,"Actual Toll Free number:" + txt + "Expected Toll Free number:" + expectedToolFreeNumber + "is same");
+			}
+			else
+			{
+			System.out.println("Actual Toll Free number:"+txt+"Expected Toll Free number:"+expectedToolFreeNumber+"is NOT same");
+			}
+		}
+		catch (Exception e)
 		{
-			throw new Exception("Sign-In button Not Present/Enabled:"+isSingInButtonPresent()+e.getLocalizedMessage());
+			throw new Exception("Toll Free number is not matching with valid number"+e.getLocalizedMessage());
 		}
 		return flag;
 	}
 	
-	public LoginPage clickOnSignIn() throws Exception{
-		
-		try {
-			MonsterUtil.explicitWait(3000);
-			//element = driver.findElement(lnkSignIn);
+	/**
+	 * Click on SignIn button in the Home Page
+	 * @return LoginPage
+	 * @throws Exception
+	 * @param String lnkSignIn;
+	 */
+	public LoginPage clickOnSignInButton() throws Exception
+	{
+		try 
+		{
 			element = setElement(lnkSignIn);
-			WebDriverWait wait = new WebDriverWait(driver, 30);
-			wait.until(ExpectedConditions.visibilityOf(element));
 			flag = element.isDisplayed();
-			if (flag) {
-				element.click();
-				//MonsterUtil.implicitWait(30);
-				waitImplicit(3000);
-			}
-		} catch (Exception e) {
-			throw new Exception("Failed while clicking on Sign in link"+e.getLocalizedMessage());
+			Assert.assertTrue(flag, "Sign-In button is not present");
+			element.click();
+		} catch (Exception e)
+		{
+			throw new Exception("Not able to click on Sing-In button:"+clickOnSignInButton()+e.getLocalizedMessage());
 		}
 		return new LoginPage(driver);
 	}
+	
 }
