@@ -4,7 +4,11 @@
 <parameter name="browserType" value="FF"/>
   <test name="Home page Test">
     <classes>
-      <class name="com.tr.test.HomePageTest"/>
+      <class name="com.tr.test.HomePageTest">
+      <!-- <methods>
+      <include name="verifySiteLogo"></include>
+      </methods> -->
+      </class>
     </classes>
   </test>
 </suite>
