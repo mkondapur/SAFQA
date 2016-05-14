@@ -95,14 +95,14 @@ public class HomePage extends BasePageObject
 	{
 		try 
 		{
-			Log.info("-->Verifying the Site-Logo in Home page<--");
+			Log.info("-->Verifying the Site-Logo in Home page<");
 			flag = isElementPresent(imgSiteLogo);
 			Assert.assertTrue(flag, "Site Log not displayed in Home page");
 			Log.info("-->Verified Site Logo in Home Page<--");
 		} 
 		catch (Exception e) 
 		{
-			throw new Exception("Site logo is not present in Home page::"+isSiteLogoDisplayed()+e.getLocalizedMessage());
+			throw new Exception("Site logo is not present in Home page::"+e.getLocalizedMessage());
 		}
 		return flag;
 	}
@@ -514,9 +514,10 @@ public class HomePage extends BasePageObject
 			flag = element.isDisplayed();
 			Assert.assertTrue(flag, "Sign-In button is not present");
 			element.click();
+			waitImplicit(30);
 		} catch (Exception e)
 		{
-			throw new Exception("Not able to click on Sing-In button:"+clickOnSignInButton()+e.getLocalizedMessage());
+			throw new Exception("Not able to click on Sing-In button:"+e.getLocalizedMessage());
 		}
 		return new LoginPage(driver);
 	}

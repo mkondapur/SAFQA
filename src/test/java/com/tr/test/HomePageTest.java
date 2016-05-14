@@ -37,7 +37,7 @@ public class HomePageTest extends BaseTestObject{
 	List<String> actual_Values=null;
 	
 	
-	@Parameters({"browserType","url"})
+	//@Parameters({"browserType","url"})
 	@Test(priority=0, enabled=true)
 	public void verifySiteLogo() throws Exception
 	{
@@ -48,6 +48,7 @@ public class HomePageTest extends BaseTestObject{
 		flag = objHomePage.isSiteLogoDisplayed();
 		Assert.assertTrue(flag, "Site logo is not displayed");
 		Log.info("---> Verifyied site logo <----");
+		
 	} 
 	catch (Exception e) 
 	{

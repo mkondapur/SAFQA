@@ -10,8 +10,10 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-
+import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -22,10 +24,13 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
+import com.tr.common.MonsterUtil;
+
 
 public class BaseTestObject {
 
 	protected static WebDriver driver;;
+	protected static Logger Log = Logger.getLogger(Logger.class.getName());
 	public static String propertyFilePath = System.getProperty("user.dir")+"\\src\\test\\resource\\testdata\\testData.properties";
 	public static String chromeDriverPath = System.getProperty("user.dir")+"\\src\\test\\resource\\drivers\\chromedriver.exe";
 	
@@ -103,12 +108,11 @@ public class BaseTestObject {
         {
         	throw new Exception("Browser is not correct");
         }
-        driver.manage().deleteAllCookies();
         driver.get(url);
-        Thread.sleep(5000);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         closePopUp();
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); 
+        MonsterUtil.explicitWait(10000);
+        
         
 }
 	@AfterClass
@@ -128,9 +132,13 @@ public class BaseTestObject {
             driver.switchTo().window(popupHandle);
             System.out.println("Popu Up Title: "+ driver.switchTo().window(popupHandle).getTitle());
             driver.close();
-            Thread.sleep(5000);
+            MonsterUtil.explicitWait(3000);
+            break;
             }
         }
+        
+        driver.switchTo().window(parent);
 	}
 	}
+	
 }

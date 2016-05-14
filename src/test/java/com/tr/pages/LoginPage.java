@@ -48,19 +48,20 @@ public class LoginPage extends BasePageObject{
 		
 	}
 	
-	public LoginPage enterUserName(String txtUserName){
-		Log.info("Enter user name as:"+txtUserName);
-		flag = setUserName().isDisplayed();
+	public LoginPage enterUserName(String UserName) throws Exception{
+		Log.info("Enter user name as:"+UserName);
+		element = setElement(txtuserName);
+		flag = element.isDisplayed();
 		Assert.assertTrue(flag, "User name field is not displayed");
-		setUserName().sendKeys(txtUserName);
+		clearAndEnterValueInTextBox(txtuserName, UserName);
 		return new LoginPage(driver);
 	}
 	
-	public LoginPage enterPassword(String txtPassword){
-		Log.info("Enter password as:"+txtPassword);
-		flag = setPassword().isDisplayed();
+	public LoginPage enterPassword(String Password) throws Exception{
+		Log.info("Enter password as:"+Password);
+		element = setElement(txtPassword);
 		Assert.assertTrue(flag, "Password txt field is not displayed");
-		setPassword().sendKeys(txtPassword);
+		element.sendKeys(Password);
 		return new LoginPage(driver);
 	}
 	
@@ -70,13 +71,13 @@ public class LoginPage extends BasePageObject{
 		flag = element.isDisplayed();
 		Assert.assertTrue(flag, "Login button is not displayed");
 		element.click();
-		MonsterUtil.implicitWait(30);
+		waitImplicit(3000);
 		return new MyDashbordPage(driver);
 	}
 	
-	public void loginAsJobSeeker(String userName,String password) {
+	public void loginAsJobSeeker(String userName,String password) throws Exception {
 		Log.info("Login as jobseeker with credentails");
-		enterPassword(userName);
+		enterUserName(userName);
 		enterPassword(password);
 		clickOnLogin();
 	}

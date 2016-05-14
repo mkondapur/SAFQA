@@ -34,7 +34,7 @@ public class DemoTest extends BaseTestObject{
 	
 	//@Parameters({"browserType","url"})
 	@Test(priority=0, enabled=true)
-	public void verifySiteLogo() throws Exception
+	public void verifySiteLogoAndLogin() throws Exception
 	{
 		Log.info("---> Verifying site logo <----");
 	try 
@@ -43,6 +43,8 @@ public class DemoTest extends BaseTestObject{
 		flag = objHomePage.isSiteLogoDisplayed();
 		Assert.assertTrue(flag, "Site logo is not displayed");
 		Log.info("---> Verifyied site logo <----");
+		objLoginPage = objHomePage.clickOnSignInButton();
+		objLoginPage.loginAsJobSeeker("manjunathreddy.kondapur@gmail.com", "manjunath123");
 	} 
 	catch (Exception e) 
 	{

@@ -24,6 +24,7 @@ import org.testng.Assert;
 import org.testng.Reporter;
 
 import com.tr.common.MonsterIndiaConstants;
+import com.tr.common.MonsterUtil;
 
 
 public class BasePageObject {
@@ -279,7 +280,7 @@ public class BasePageObject {
 		WebElement textBox = driver.findElement(by);
 		Assert.assertTrue(textBox.isEnabled(), "Text Box is enabled");
 		textBox.sendKeys(Keys.CONTROL + "a");
-		textBox.sendKeys(Keys.DELETE);
+		textBox.sendKeys(Keys.BACK_SPACE);
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
@@ -342,6 +343,9 @@ public class BasePageObject {
 		driver.switchTo().window(windowName);
 		waitImplicit(3000);
 	}
+	
+	
+	
 public  String getPageTitle()
 {
 		return driver.getTitle().trim();
@@ -356,6 +360,5 @@ public  String getPageTitle()
 				return ExcelutilObject.getCellData(row, column);
 				
 			}
-
 
 }
