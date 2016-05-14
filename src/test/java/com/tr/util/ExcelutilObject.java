@@ -53,19 +53,28 @@ public static void setExcelFile(String Path,String SheetName) throws Exception
 
 public  static String getCellData(int RowNum, int ColNum) throws Exception{
 
+	String CellData = null;
 		try{
 
 			Cell = ExcelWSheet.getRow(RowNum).getCell(ColNum);
-
-			String CellData = Cell.getStringCellValue();
-
+			if (Cell.getCellType()==XSSFCell.CELL_TYPE_STRING) {
+				 CellData = Cell.getStringCellValue();
+			}else if (Cell.getCellType()==XSSFCell.CELL_TYPE_NUMERIC) {
+				double i = Cell.getNumericCellValue();
+				CellData = new Double(i).toString();
+				CellData = CellData.substring(0, CellData.lastIndexOf('.'));
+			} 
+			//CellData = Cell.getStringCellValue().toString();
+			
 			return CellData;
 
 			}
 		catch (Exception e)
 		{
 
-			return"";
+			//String CData = (int)Double.parseDouble(String.valueOf(CellData))+"";
+			//String CData = String.valueOf(CellData);
+			return "";
 
 			}
 

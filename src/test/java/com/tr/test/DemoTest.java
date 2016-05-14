@@ -30,6 +30,7 @@ public class DemoTest extends BaseTestObject{
 	String actual_Result=null;
 	String exp_Result=null;
 	String jobTitle = null;
+	String jobExp = null;
 	
 	
 	//@Parameters({"browserType","url"})
@@ -53,7 +54,7 @@ public class DemoTest extends BaseTestObject{
 
 	}
 	
-	//@Parameters({"browserType","url"})
+	@Parameters({"browserType","url"})
 	@Test(priority=1, enabled=true)
 	public void verify_Jobtitle() throws Exception
 	{
@@ -61,6 +62,8 @@ public class DemoTest extends BaseTestObject{
 	try 
 	{
 		jobTitle = getExcelTest(1,1);
+		jobExp = getExcelTest(1, 2);
+		System.out.println(jobExp);
 		objHomePage = new HomePage(driver);
 		flag = objHomePage.isSiteLogoDisplayed();
 		Assert.assertTrue(flag, "Site logo is not displayed");
