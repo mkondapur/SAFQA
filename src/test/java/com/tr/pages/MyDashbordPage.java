@@ -54,6 +54,8 @@ public class MyDashbordPage extends BasePageObject {
 		By edit = By.xpath("// a[@class ='mn-uppf_btn mn-eico']");
 		By tabs = By.xpath("//div[contains(@class,'tabitem')]");
 		By viewbtn = By.xpath("//div[@id='jobs_like']//a[contains(@class,'apply_btn')]");
+		By imgLogout = By.xpath("//div[@class='uimg']/img");
+		By lnkLogOut = By.linkText("Logout");
 	//************ Declaration area ends ***********************************
 		/**
 		 * This is a constructor used to pass the driver
@@ -337,5 +339,24 @@ public class MyDashbordPage extends BasePageObject {
 			return job;
 		}
 
+		public LogOutPage clickOnLogOut() throws Exception{
+			element = null;
+			try {
+				element = driver.findElement(imgLogout);
+				flag = element.isDisplayed();
+				Assert.assertTrue(flag, "Log out profile is not displayed");
+				element.click();
+				MonsterUtil.explicitWait(100);
+				element = driver.findElement(lnkLogOut);
+				element.click();
+				MonsterUtil.explicitWait(2000);
+				
+			} catch (Exception e) {
+				
+				throw new Exception("Failed while clicking on logout link::"+e.getLocalizedMessage());
+			}
+			
+			return new LogOutPage(driver);
+		}
 }
 
