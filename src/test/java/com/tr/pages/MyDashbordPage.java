@@ -185,7 +185,7 @@ public class MyDashbordPage extends BasePageObject {
 	 * @return String email id
 	 * @throws Exception
 	 */
-		public String email() throws Exception {
+		public String getEmail() throws Exception {
 			try {
 				element = driver.findElement(email);
 				Str_email = element.getText();
