@@ -63,7 +63,7 @@ public class MyDashBoardPageTest extends BaseTestObject{
 			System.out.println(txt);
 			Assert.assertEquals(txt, phverified, "Phone No. is not verified");
 			
-			txt = objMyDashboard.email();
+			txt = objMyDashboard.getEmail();
 			System.out.println(txt);
 			Assert.assertTrue(email.contains(txt), "Email id is not Matching ");
 			
