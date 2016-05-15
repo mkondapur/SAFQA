@@ -1,5 +1,9 @@
 package com.tr.pages;
 
+import java.util.logging.Logger;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -19,6 +23,7 @@ public class UploadResumePage extends BasePageObject{
 	boolean flag = false;
 	String text = null;
 	WebElement element;
+	
 	
 	public UploadResumePage(WebDriver driver) {
 		super(driver);
@@ -134,6 +139,7 @@ public class UploadResumePage extends BasePageObject{
 	//submit button
 	
 	By submit = By.id("submit1_id");
+	private static Logger Log = Logger.getLogger(Logger.class.getName());
 
 	/**
 	 * Author Gowtham
@@ -143,19 +149,27 @@ public class UploadResumePage extends BasePageObject{
 	 * @throws Exception
 	 */
 	public UploadResumePage selectNationality(String country){
-		Log.info("verifiction of nationality drop down");
+		Log.info("selecting the nationality");
 
-		element = driver.findElement(nationality);
-		element.click();
-		
-		element = driver.findElement(searchField);
-		element.sendKeys(country);
-		element.sendKeys(Keys.ARROW_DOWN);
-		element.sendKeys(Keys.ENTER);
-		
-		String text = element.getAttribute("value");
-		System.out.println("the selected country is::"+text);
-		
+		try {
+			element = setElement(nationality);
+			flag = element.isDisplayed();
+			Assert.assertTrue(flag, "nationality drop down is not present");
+			element.click();
+			
+			element = setElement(searchField);
+			element.sendKeys(country);
+			element.sendKeys(Keys.ARROW_DOWN);
+			element.sendKeys(Keys.ENTER);
+			
+			String text = element.getAttribute("value");
+			System.out.println("the selected country is::"+text);
+			
+		} catch (Exception e) {
+			System.out.println("unable to select nationality"+"selectNationality"+e.getLocalizedMessage());
+		}
+		Log.info("nationality is successfully selected");
+
 		return this;
 	}
 	
@@ -166,12 +180,12 @@ public class UploadResumePage extends BasePageObject{
 	 * @return this
 	 * @throws Exception
 	 */
-	public UploadResumePage selectGender(){
+	public UploadResumePage selectGender() throws Exception{
 		Log.info("verifiction of gender button");
 
-		element = driver.findElement(gender);
+		element = setElement(gender);
 		flag = element.isDisplayed();
-		System.out.println("the male button is displayed::"+flag);
+		Assert.assertTrue(flag, "gender button is not displayed");
 		element.click();
 		
 		return this;
@@ -185,24 +199,34 @@ public class UploadResumePage extends BasePageObject{
 	 * @return this
 	 * @throws Exception
 	 */
-	public UploadResumePage dateOfBirth() {
+	public UploadResumePage dateOfBirth() throws Exception {
 		Log.info("verifiction of date of birth drop down");
 
-		element = driver.findElement(dobDateClick);
+		element = setElement(dobDateClick);
+		flag = element.isDisplayed();
+		Assert.assertTrue(flag, "date of birth element is not present");
 		element.click();
-		element = driver.findElement(dobSelectDate);
+		
+		element = setElement(dobSelectDate);
+		flag = element.isDisplayed();
+		Assert.assertTrue(flag, "dob select date is not present");
 		element.click();
 		text = element.getAttribute("value");
 		System.out.println("the selected date is::"+text);
 	
-		element = driver.findElement(dobMonthClick);
+		element = setElement(dobMonthClick);
+		flag = element.isDisplayed();
+		Assert.assertTrue(flag, "dob month select is not displayed");
 		element.click();
-		element = driver.findElement(dobSelectMonth);
+		
+		element = setElement(dobSelectMonth);
 		element.click();
 		text = element.getAttribute("value");
 		System.out.println("the selected month is::"+text);
 		
-		element = driver.findElement(dobYear);
+		element = setElement(dobYear);
+		flag = element.isDisplayed();
+		Assert.assertTrue(flag, "dob year select is not displayed");
 		element.click();
 		element = driver.findElement(dobSelectYear);
 		element.click();
@@ -221,22 +245,16 @@ public class UploadResumePage extends BasePageObject{
 	public UploadResumePage selectJobType(){
 		Log.info("verifiction of select job type drop down");
 
-		try {
-			WebDriverWait wait = new WebDriverWait(driver, 15); 
+		try {	
 			
-			
-			element = driver.findElement(jobType);
+			element = setElement(jobType);
 			flag = element.isDisplayed();
 			Assert.assertTrue(flag, "job type text field is not displayed");
-			element.click();
-			wait.until(ExpectedConditions.visibilityOfElementLocated(jobType));
-			
+			element.click();			
 			element = driver.findElement(jobTypePermanent);
 			element.click();
-			wait.until(ExpectedConditions.visibilityOfElementLocated(jobTypePermanent));
-
 			
-			element = driver.findElement(jobTypeField);
+			element = setElement(jobTypeField);
 			text = element.getAttribute("value");
 			System.out.println("preferred job type is::"+text);
 			text = element.getAttribute("value");
@@ -245,7 +263,7 @@ public class UploadResumePage extends BasePageObject{
 			Actions action = new Actions(driver);
 			action.moveToElement(element);
 			action.click().build().perform();
-			
+			Thread.sleep(5000);
 		} catch (Exception e) {
 			System.out.println("unable to select the element"+"selectJobType"+e.getLocalizedMessage());;
 		}
@@ -263,26 +281,24 @@ public class UploadResumePage extends BasePageObject{
 		Log.info("verifiction of preferred job location drop down");
 
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 15); 
 
-			element = driver.findElement(preferredJobLocation);
+			element = setElement(preferredJobLocation);
 			flag = element.isDisplayed();
 			Assert.assertTrue(flag, "the job ocation field is not displayed");
-			wait.until(ExpectedConditions.visibilityOfElementLocated(preferredJobLocation));
 			element.click();
 			
-			element = driver.findElement(selectPreferredJobLocation);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(selectPreferredJobLocation));
+			element = setElement(selectPreferredJobLocation);
 			element.click();
 			
-			element = driver.findElement(jobLocationField);
+			element = setElement(jobLocationField);
 			text = element.getAttribute("value");
 			System.out.println("preferred job location is::"+text);
 			
-			element = driver.findElement(closePrefferedJobLocation);
+			element = setElement(closePrefferedJobLocation);
 			Actions action = new Actions(driver);
 			action.moveToElement(element);
 			action.click().build().perform();
+			Thread.sleep(5000);
 		} catch (Exception e) {
 				System.out.println("element not found"+"preferredJobLocation"+e.getLocalizedMessage());
 		}
@@ -300,25 +316,23 @@ public class UploadResumePage extends BasePageObject{
 		Log.info("verifiction of select job role field");
 
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 15);
-			element = driver.findElement(roles);
+			element = setElement(roles);
 			flag = element.isDisplayed();
 			Assert.assertTrue(flag, "job role is not displayed");
-			wait.until(ExpectedConditions.visibilityOfElementLocated(roles));
 			element.click();
 
 			element = driver.findElement(jobRole);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(jobRole));
 			element.click();
 			
-			element = driver.findElement(rolesField);
+			element = setElement(rolesField);
 			text = element.getAttribute("value");
 			System.out.println("the selected job role is::"+text);
 			
-			element = driver.findElement(roleClose);
+			element = setElement(roleClose);
 			Actions action = new Actions(driver);
 			action.moveToElement(element);
 			action.click().build().perform();
+			Thread.sleep(5000);
 		} catch (Exception e) {
 				System.out.println("element not found"+"selectJobRole"+e.getLocalizedMessage());
 		}
@@ -335,14 +349,12 @@ public class UploadResumePage extends BasePageObject{
 		Log.info("verifiction of select skills drop down");
 
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 15);
-			element = driver.findElement(skills);
+			element = setElement(skills);
 			flag = element.isDisplayed();
 			Assert.assertTrue(flag, "skills field is not displayed");
-			wait.until(ExpectedConditions.visibilityOfElementLocated(skills));
 			element.click();
 			
-			element = driver.findElement(enterSkills);
+			element = setElement(enterSkills);
 			element.sendKeys(skill);
 			element.sendKeys(Keys.ENTER);
 			text = element.getAttribute("values");
@@ -364,23 +376,19 @@ public class UploadResumePage extends BasePageObject{
 		Log.info("verifiction of select experience drop down");
 
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 15);
-			element = driver.findElement(experienceLevel);
+			element = setElement(experienceLevel);
 			flag = element.isDisplayed();
 			Assert.assertTrue(flag, "experience field is not displayed");
-			wait.until(ExpectedConditions.visibilityOfElementLocated(experienceLevel));
 			element.click();
 			
-			element = driver.findElement(experienceYear);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(experienceYear));
+			element = setElement(experienceYear);
 			element.click();
 			
-			element = driver.findElement(experiencrField);
+			element = setElement(experiencrField);
 			text = element.getAttribute("value");
 			System.out.println("the selected experience is::"+text);
 			
 			element = driver.findElement(closeExperience);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(closeExperience));
 			element.click();
 		} catch (Exception e) {
 			System.out.println("element not found"+"selectExperience"+e.getLocalizedMessage());
@@ -388,28 +396,24 @@ public class UploadResumePage extends BasePageObject{
 		return this;
 	}
 	
-	public UploadResumePage workHistory(String designation, String company){
+	public UploadResumePage workHistory(String designation, String company) throws Exception{
 		Log.info("verifiction designation and company field");
 
-		element = driver.findElement(designations);
-		flag = element.isEnabled();
-		if (flag) { System.out.println("designation field is enabled");
-			
-		} else { System.out.println("designation field is disabled");
-
+		element = setElement(designations);
+		flag = element.isDisplayed();
+		Assert.assertTrue(flag, "designation field is not displayed");
+		if (element.isEnabled()) {
+			clearAndEnterValueInTextBox(designations, designation);
 		}
-		element.clear();
-		element.sendKeys(designation);
 		
-		element = driver.findElement(companyName);
-		flag = element.isEnabled();
-		if (flag) { System.out.println("comapany name field is displayed");
-			
-		} else {  System.out.println("comapany name field is displayed");
+		element = setElement(companyName);
+		flag = element.isDisplayed();
+		Assert.assertTrue(flag, "company name field is not displayed");
+
+		if (element.isEnabled()) { 
+			clearAndEnterValueInTextBox(companyName, company);
 
 		}
-		element.clear();
-		element.sendKeys(company);
 		
 		return this;
 		
@@ -419,22 +423,13 @@ public class UploadResumePage extends BasePageObject{
 		Log.info("verifiction of notice period drop down");
 
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 15);
 
-			element = driver.findElement(noticePeriod);
+			element = setElement(noticePeriod);
 			flag = element.isDisplayed();
-			if (flag) { System.out.println("notice period element is displayed");
-				
-			} else { System.out.println("notice period element is not displayed ");
-			}
-			
-			wait.until(ExpectedConditions.visibilityOfElementLocated(noticePeriod));
-
+			Assert.assertTrue(flag, "notice period field is not displayed");
 			element.click();
 			
-			element= driver.findElement(noticePeriodValues);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(noticePeriodValues));
-
+			element= setElement(noticePeriodValues);
 			element.click();
 			
 		} catch (Exception e) {
@@ -455,25 +450,18 @@ public class UploadResumePage extends BasePageObject{
 		Log.info("verifiction of qualification drop down");
 
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 15);
 
-			element = driver.findElement(highestQualification);
+			element = setElement(highestQualification);
 			flag = element.isDisplayed();
-			if (flag) { System.out.println("qualification field is displayd");
-				
-			} else {
-				System.out.println("qualification field is not displayd");
-			}
-			wait.until(ExpectedConditions.visibilityOfElementLocated(highestQualification));
+			Assert.assertTrue(flag, "highest qualification drop down is not displayed");
+			element.click();
+			
+			
+			element = setElement(selectHighestQualification);
 
 			element.click();
 			
-			element = driver.findElement(selectHighestQualification);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(selectHighestQualification));
-
-			element.click();
-			
-			element = driver.findElement(highestQualification);
+			element = setElement(highestQualification);
 			text = element.getAttribute("value");
 			System.out.println("the selected qualification is::"+text);
 		} catch (Exception e) {
@@ -494,21 +482,13 @@ public class UploadResumePage extends BasePageObject{
 
 		try {
 			
-			WebDriverWait wait = new WebDriverWait(driver, 20);
-
-			element = driver.findElement(specialization);
+			element = setElement(specialization);
 			flag = element.isDisplayed();
-			if (flag) { System.out.println("specialization field is displayd");
-				
-			} else {
-				System.out.println("specialization field is not displayd");
-			}
-			wait.until(ExpectedConditions.visibilityOfElementLocated(specialization));
+			Assert.assertTrue(flag, "specialization drop down is not displayed");
 
 			element.click();
 			
-			element = driver.findElement(selectSpecialization);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(selectSpecialization));
+			element = setElement(selectSpecialization);
 			element.click();
 			
 			element = driver.findElement(specialization);
@@ -528,28 +508,18 @@ public class UploadResumePage extends BasePageObject{
 	 * @return this
 	 * @throws Exception
 	 */
-	public UploadResumePage passedOutYear(){
+	public UploadResumePage passedOutYearSelect() throws Exception{
 		Log.info("verifiction of passed out year drop down");
 
-		WebDriverWait wait = new WebDriverWait(driver, 20);
-
-		element = driver.findElement(yearOfPassing);
+		element = setElement(yearOfPassing);
 		flag = element.isDisplayed();
-		if (flag) { System.out.println("year of passing field is displayd");
-			
-		} else {
-			System.out.println("year of passing field is not displayd");
-		}
-		wait.until(ExpectedConditions.visibilityOfElementLocated(yearOfPassing));
-
+		Assert.assertTrue(flag, "passed out year element is not displayed");
 		element.click();
 		
-		element = driver.findElement(selectYearOfPassing);
-		wait.until(ExpectedConditions.visibilityOfElementLocated(selectYearOfPassing));
-
+		element = setElement(selectYearOfPassing);
 		element.click();
 		
-		element = driver.findElement(yearOfPassing);
+		element = setElement(yearOfPassing);
 		text = element.getAttribute("value");
 		System.out.println("the passed out year is::"+text);
 		return this;
@@ -563,28 +533,18 @@ public class UploadResumePage extends BasePageObject{
 	 * @return this
 	 * @throws Exception
 	 */
-	public UploadResumePage selectInstitution(){
+	public UploadResumePage selectInstitution() throws Exception{
 		Log.info("verifiction of institution drop down");
 
-		WebDriverWait wait = new WebDriverWait(driver, 20);
-
-		element = driver.findElement(institution);
+		element = setElement(institution);
 		flag = element.isDisplayed();
-		if (flag) { System.out.println("institution field is displayd");
-			
-		} else {
-			System.out.println("institution field is not displayd");
-		}
-		wait.until(ExpectedConditions.visibilityOfElementLocated(institution));
-
+		Assert.assertTrue(flag, "select institution drop down is not displayed");
 		element.click();
 		
-		element = driver.findElement(institutionName);
-		wait.until(ExpectedConditions.visibilityOfElementLocated(institutionName));
-
+		element = setElement(institutionName);
 		element.click();
 		
-		element = driver.findElement(institution);
+		element = setElement(institution);
 		text = element.getAttribute("value");
 		System.out.println("the selected institution is::"+text);
 		return this;
@@ -597,18 +557,15 @@ public class UploadResumePage extends BasePageObject{
 	 * @return this
 	 * @throws Exception
 	 */
-	public UploadResumePage languageField(String languages){
+	public UploadResumePage languageField(String languages) throws Exception{
 		Log.info("verifiction of language field"+languages);
 
-		element = driver.findElement(languageKnown);
+		element = setElement(languageKnown);
 		flag = element.isDisplayed();
-		if (flag) { System.out.println("language field is displayed");
-			
-		} else {  System.out.println("language field is not displayed");
-
+		Assert.assertTrue(flag, "enter language field is not displayed");
+		if (element.isEnabled()) { 
+			clearAndEnterValueInTextBox(languageKnown, languages);
 		}
-		
-		element.sendKeys(languages);
 		element.getAttribute("value");
 		System.out.println("the entered languages are::"+text);
 		return this;
@@ -621,32 +578,22 @@ public class UploadResumePage extends BasePageObject{
 	 * @return this
 	 * @throws Exception
 	 */
-	public UploadResumePage languageReadSpeakWrite(){
+	public UploadResumePage languageReadSpeakWrite() throws Exception{
 		Log.info("verifiction of read speak and write languages");
 
-		element = driver.findElement(read);
+		element = setElement(read);
 		flag = element.isEnabled();
-		if (flag) { System.out.println("language read field is enabled");
-			
-		} else {  System.out.println("language read field is not enabled");
-
-		}
+		Assert.assertTrue(flag, "language read button is not displayed");
 		element.click();
-		element = driver.findElement(write);
+		
+		element = setElement(write);
 		flag = element.isEnabled();
-		if (flag) { System.out.println("language write field is enabled");
-			
-		} else {  System.out.println("language write field is not enabled");
-
-		}
+		Assert.assertTrue(flag, "language write button is not displayed");
 		element.click();
-		element = driver.findElement(speak);
+		
+		element = setElement(speak);
 		flag = element.isEnabled();
-		if (flag) { System.out.println("language speak field is enabled");
-			
-		} else {  System.out.println("language speak field is not enabled");
-
-		}
+		Assert.assertTrue(flag, "language speak button is not displayed");
 		element.click();
 		return this;
 	}
@@ -673,18 +620,25 @@ public class UploadResumePage extends BasePageObject{
 		Log.info("verifiction of submit button and click");
 
 		try {
-			element = driver.findElement(submit);
+			element = setElement(submit);
 			flag = element.isDisplayed();
-			if (flag) { System.out.println("submit button is displayed");
-				
-			} else {  System.out.println("submit button is not displayed");
-
-			}
+			Assert.assertTrue(flag, "submit button is not displayed");
+			if (element.isEnabled()) { 
 			element.click();
-			
+			}
 		} catch (Exception e) {
 			throw new Exception("unable to click on skip and continue"+"clickSkipContinue"+e.getLocalizedMessage());
 		}
 		return new SelectYourAvatarPage(driver);
 	}
+	
+
+
 }
+	
+	
+	
+	
+	
+
+
