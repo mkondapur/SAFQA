@@ -63,6 +63,7 @@ public class DemoTest extends BaseTestObject{
 	{
 		jobTitle = getExcelTest(1,1);
 		jobExp = getExcelTest(1, 2);
+		setExcelTest("Bangalore", 1, 3);
 		System.out.println(jobExp);
 		objHomePage = new HomePage(driver);
 		flag = objHomePage.isSiteLogoDisplayed();
@@ -82,6 +83,13 @@ public class DemoTest extends BaseTestObject{
 		
 		ExcelutilObject.setExcelFile(MonsterIndiaConstants.Path_TestData, "SearchTestData");
 		return ExcelutilObject.getCellData(row, column);
+		
+	}
+	
+public void setExcelTest(String updateVal,int row,int column) throws Exception {
+		
+		ExcelutilObject.setExcelFile(MonsterIndiaConstants.Path_TestData, "SearchTestData");
+		ExcelutilObject.setCellData(updateVal, row, column);
 		
 	}
 }

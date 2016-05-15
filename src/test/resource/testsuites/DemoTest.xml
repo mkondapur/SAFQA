@@ -6,7 +6,7 @@
     <classes>
       <class name="com.tr.test.DemoTest">
       <methods>
-      <include name="verify_Jobtitle"></include>
+      <include name="verifySiteLogoAndLogin"></include>
       </methods>
       </class>
     </classes>
