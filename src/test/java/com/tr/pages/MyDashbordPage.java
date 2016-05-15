@@ -211,20 +211,6 @@ public class MyDashbordPage extends BasePageObject {
 
 		// **************************** Verify the last updated **************************************************************
 		
-	/**
-	 * This Method retrieves the last updated value
-	 * @return String Last Updated
-	 * @throws Exception
-	 */
-		public String lastupdated() throws Exception{
-			try {
-				element = driver.findElement(lastupdated);
-				Str_lastupdated = element.getText();
-			} catch (Exception e) {
-				throw new Exception("LAST UPDATED NOT FOUND:: "+e.getLocalizedMessage());
-			}
-			return Str_lastupdated;
-		}
 		
 	// *************************************** To verify the edit profile link exists**************************************************************
 	/** 
@@ -234,6 +220,27 @@ public class MyDashbordPage extends BasePageObject {
 	 */
 		
 		
+
+/**
+ * This Method retrieves the last updated value
+ * @return String Last Updated
+ * @throws Exception
+ */
+	public String lastupdated() throws Exception{
+		try {
+			element = driver.findElement(lastupdated);
+			Str_lastupdated = element.getText();
+		} catch (Exception e) {
+			throw new Exception("LAST UPDATED NOT FOUND:: "+e.getLocalizedMessage());
+		}
+		return Str_lastupdated;
+	}
+/** 
+ * This click on edit link 
+ * @return driver to view resume page
+ * @throws Exception
+ */
+
 		
 		public ViewResumePage clickonedit() throws Exception{
 			try {
@@ -247,14 +254,10 @@ public class MyDashbordPage extends BasePageObject {
 				throw new Exception("Edit Button NOT FOUND:: "+e.getLocalizedMessage());
 			}
 			return new ViewResumePage(driver);
-		}
 		
-	//******************* Below methods are used to verify the jobs tabs ******************************************************************************
-	/**
-	 * This Method gets the all the tabs present in the jobs header
-	 * @return List of tabs
-	 * @throws Exception
-	 */
+	}
+
+	 
 		public  List<WebElement> jobstab() throws Exception{
 			try {
 				tabslist = driver.findElements(tabs);
